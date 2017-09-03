@@ -1,0 +1,30 @@
+### custom
+target/
+
+### Example user template
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+
+### Eclipse template
+.metadata
+bin/
+tmp/
+.settings/
+# Eclipse Core
+.project
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+# STS (Spring Tool Suite)
+.springBeans
+
+### Java template
+# Compiled class readFile
+*.class
+
+# Log readFile
+*.log
+logs/

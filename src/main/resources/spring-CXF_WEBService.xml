@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+
+
+    <!--<import resource="classpath:META-INF/cxf/cxf.xml"/>-->
+    <!--3.0+ not need-->
+    <!--<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>-->
+    <!--<import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>-->
+
+    <bean id="sampleService" class="com.vcl0000.cxfwebservice.service.imple.SampleServiceImpl"/>
+
+    <bean id="inMessageInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor"/>
+    <bean id="outLoggingInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor"/>
+
+    <jaxws:endpoint implementor="#sampleService" address="sample">
+        <jaxws:inInterceptors>
+            <ref bean="inMessageInterceptor"/>
+        </jaxws:inInterceptors>
+        <jaxws:outInterceptors>
+            <ref bean="outLoggingInterceptor"/>
+        </jaxws:outInterceptors>
+    </jaxws:endpoint>
+    <!--<jaxws:server serviceClass="com.vcl0000.cxfwebservice.service.SampleService" address="sample">
+        <jaxws:inInterceptors>
+            <ref bean="inMessageInterceptor"/>
+        </jaxws:inInterceptors>
+        <jaxws:outInterceptors>
+            <ref bean="outLoggingInterceptor"/>
+        </jaxws:outInterceptors>
+    </jaxws:server>-->
+
+    <!--<jaxws:client address="http://localhost:8080/service/sample?wsdl" id="sampleClient" serviceClass=""/>-->
+
+
+    <!--&lt;!&ndash;只配这个，加上webservice的注解也是可以的&ndash;&gt;
+    <bean id="sampleService" class="com.vcl0000.cxfwebservice.SampleServiceImpl"/>
+    <jaxws:endpoint id="sample" implementor="#sampleService" address="sample"/>-->
+</beans>

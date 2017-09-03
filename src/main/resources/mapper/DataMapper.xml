@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vcl0000.data.mapper.DataMapper">
+    <resultMap id="UserMap" type="User" >
+        <id column="USER_ID" property="userId" jdbcType="VARCHAR" />
+        <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+        <result column="USER_PASSWD" property="passWord" jdbcType="VARCHAR" />
+        <result column="USER_AGE" property="userAge" jdbcType="DECIMAL" />
+        <result column="FLG" property="flg" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="UserInfoMap" type="UserInfo" >
+        <!-- only two object filed-->
+        <id column="USER_ID_INFO" property="userId" jdbcType="VARCHAR" />
+        <result column="USER_ADRR" property="userAdrr" jdbcType="VARCHAR" />
+        <result column="USER_TEL" property="userTel" jdbcType="VARCHAR" />
+        <result column="USER_MAIL" property="userMail" jdbcType="VARCHAR" />
+    </resultMap>
+    <resultMap id="UserAndInfoMap" type="UserAndInfo">
+        <result column="USER_ID" property="userId" jdbcType="VARCHAR" />
+        <association property="user" column="USER_ID" javaType="User" resultMap="UserMap"/>
+        <association property="userInfo" column="USER_ID_INFO" javaType="UserInfo"
+                     resultMap="UserInfoMap"/>
+
+    </resultMap>
+
+    <select id="findUserAll" resultType="java.util.Map">
+        SELECT * FROM test.user
+    </select>
+
+    <select id="findUserById" resultType="java.util.Map" parameterType="string">
+        SELECT * FROM test.user WHERE user_id=#{userId}
+    </select>
+
+    <select id="findOneUser" resultMap="UserMap">
+        SELECT
+          USER_ID,
+          USER_NAME,
+          USER_PASSWD,
+          USER_AGE,
+          FLG
+        FROM test.user
+        ORDER BY RAND()
+        LIMIT 1
+    </select>
+
+    <select id="findOneUserObject" resultType="User">
+        SELECT
+          USER_ID AS userId,
+          USER_NAME AS userName,
+          USER_PASSWD,
+          USER_AGE AS userAge,
+          FLG
+        FROM test.user
+        ORDER BY RAND()
+        LIMIT 1
+    </select>
+
+    <select id="findUserAndInfo" resultMap="UserAndInfoMap" parameterType="User">
+        SELECT
+          T1.USER_ID,
+          T1.USER_NAME,
+          T1.USER_PASSWD,
+          T1.USER_AGE,
+          T1.FLG,
+          T2.USER_ID AS USER_ID_INFO,
+          T2.USER_ADRR,
+          T2.USER_TEL,
+          T2.USER_MAIL
+        FROM test.user T1
+          LEFT JOIN test.user_info T2
+            ON T1.user_id = T2.user_id
+        WHERE T1.FLG = '1'
+          AND T1.USER_ID = #{userId}
+    </select>
+</mapper>

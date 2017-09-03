@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--设置log4j2的自身log级别为warn  自动刷新日志配置时间-->
+<configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_HOME">logs</Property>
+        <Property name="FILE_SIZE">10M</Property>
+        <Property name="log_pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%method:%L - %msg%n
+        </Property>
+        <Property name="rolling_file_name">SSM_all_%d{yyyy-MM-dd}.%i.gz</Property>
+        <Property name="rollover_strategy_max">30</Property>
+        <Property name="Charset">UTF-8</Property>
+    </Properties>
+    <appenders>
+        <console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%${log_pattern}"/>
+        </console>
+
+        <RollingRandomAccessFile name="File"
+                                 fileName="${LOG_HOME}/SSM.log"
+                                 filePattern="${LOG_HOME}/archive/${rolling_file_name}"
+                                 immediateFlush="false" append="true">
+            <Filters>
+                <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="ACCEPT"/>
+            </Filters>
+            <PatternLayout>
+                <Pattern>${log_pattern}</Pattern>
+                <Charset>${Charset}</Charset>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="${FILE_SIZE}"/><!--多大后压缩-->
+            </Policies>
+            <DefaultRolloverStrategy max="${rollover_strategy_max}"/><!--压缩包保留个数-->
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="sql"
+                                 fileName="${LOG_HOME}/SSM_sql.log"
+                                 filePattern="${LOG_HOME}/archive/${rolling_file_name}"
+                                 immediateFlush="false" append="true">
+            <Filters>
+                <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="ACCEPT"/>
+            </Filters>
+            <PatternLayout>
+                <Pattern>${log_pattern}</Pattern>
+                <Charset>${Charset}</Charset>
+            </PatternLayout>
+
+            <Policies>
+                <SizeBasedTriggeringPolicy size="${FILE_SIZE}"/>
+            </Policies>
+            <DefaultRolloverStrategy max="${rollover_strategy_max}"/>
+        </RollingRandomAccessFile>
+
+    </appenders>
+
+    <loggers>
+        <!-- <AsyncLogger name="asynLogger" level="trace"
+            includeLocation="true">
+            <AppenderRef ref="RandomAccessFile" />
+        </AsyncLogger> -->
+
+        <Logger name="com.vcl0000.data.mapper" level="DEBUG">
+            <AppenderRef ref="sql"/>
+        </Logger>
+        <Root level="info" includeLocation="true">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+        </Root>
+    </loggers>
+
+</configuration>
